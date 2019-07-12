@@ -11,7 +11,6 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'homeUrl' => 'ujian/admin',
     'aliases' => [
         '@adminlte/widgets' => '@vendor/adminlte/yii2-widgets'
     ],
