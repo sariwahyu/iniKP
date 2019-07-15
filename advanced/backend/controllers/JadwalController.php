@@ -69,12 +69,12 @@ class JadwalController extends Controller
         $model = new Jadwal();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->file = UploadFile::getInstance($model,'U_PESERTA');
+            $model->file = UploadedFile::getInstance($model,'file');
             $uploadExists = 0;
 
             if($model->file){
-                $imagepath = 'upload/files';
-                $model->file_import = $imagepath .rand(10, 100).'-'.str-replace('','-',$model->file->name);
+                $imagepath = 'upload/files/';
+                $model->U_PESERTA= $imagepath .rand(10,100).'-'.str_replace('','-',$model->file->name);
                 
                 $bulkInsertArray = array();
                 $random_date = Yii::$app->formatter->asDatetime(date("dmyyhis"), "php:dmYHis");
@@ -86,9 +86,9 @@ class JadwalController extends Controller
             }
 
             if($uploadExists){
-                $model->file->saveAs($model->file_import);
+                $model->file->saveAs($model->U_PESERTA);
 
-                $handle = fopen($model->file_import,'r');
+                $handle = fopen($model->U_PESERTA,'r');
                 if($handle){
                     $model->jadwal=$random;
                     if($model->save()){
