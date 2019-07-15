@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use backend\models\Sesi;
+use backend\models\Kategori;
+
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\ConfigSoal */
@@ -17,8 +19,8 @@ use backend\models\Sesi;
     <?= $form->field($model, 'C_ID')->textInput() ?>
 
     <?= $form->field($model, 'K_ID')->dropDownList(
-        ArrayHelper::map(Kategori::find()->all(),'K_ID', 'C_ID','K_NAMA'),
-        ['prompt'=>'Pilih Kategori Soal'] 
+        ArrayHelper::map(Kategori::find()->all(),'K_ID','K_NAMA'),
+        ['prompt'=>'Pilih Kategori'] 
     ) ?>
 
     <?= $form->field($model, 'S_ID')->dropDownList(
