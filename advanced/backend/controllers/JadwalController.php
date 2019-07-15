@@ -8,6 +8,8 @@ use backend\models\JadwalSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\db\Expression;
+use yii\web\UploadedFile;
 
 /**
  * JadwalController implements the CRUD actions for Jadwal model.
@@ -67,13 +69,60 @@ class JadwalController extends Controller
         $model = new Jadwal();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->U_DIBUAT = date('Y-m-d');
-            $model->save();
+            $model->file = UploadFile::getInstance($model,'U_PESERTA');
+            $uploadExists = 0;
+
+            if($model->file){
+                $imagepath = 'upload/files';
+                $model->file_import = $imagepath .rand(10, 100).'-'.str-replace('','-',$model->file->name);
+                
+                $bulkInsertArray = array();
+                $random_date = Yii::$app->formatter->asDatetime(date("dmyyhis"), "php:dmYHis");
+                $random = $random_date.rand(10, 100);
+                $userId = \Yii::$app->user->identity->id;
+                $now = new Expression('NOW()');
+                
+                $uploadExists = 1; 
+            }
+
+            if($uploadExists){
+                $model->file->saveAs($model->file_import);
+
+                $handle = fopen($model->file_import,'r');
+                if($handle){
+                    $model->jadwal=$random;
+                    if($model->save()){
+                        #var_dump($model->errors);
+
+                        while(($line=fgetcsv($handle, 1000,",")) != FALSE){
+                             $bulkInsertArray[]=[
+                                 'pes_id' => $model,
+                                 'r_id' => $model,
+                                 'pes_nama' => $model,
+                                 'pes_alamat' => $model,
+                                 'pes_email' => $model,
+                                 'pes_jurusan' => $model,
+                                 'pes_username' => $model,
+                                 'pes_password' => $model,
+
+                             ];
+                        }
+                    }
+                    fclose($handle);
+
+                    $tableName = 'peserta';
+                    $columnNameArray = ['pes_id','r_id', 'pes_nama', 'pes_alamat', 'pes_email', 'pes_jurusan', 'pes_username', 'pes_password'];
+                    Yii::$app->db->createCommand()->jadwalInsert($tableName, $columnNameArray, $bulkInsertArray)->execute();
+                    #print_r($bulkInsertArray);
+                }
+
+            }
+
             return $this->redirect(['view', 'id' => $model->U_ID]);
-        }
+        } 
         else {
             return $this->render('create', [
-            'model' => $model,
+                'model' => $model,
             ]);
         }
     }

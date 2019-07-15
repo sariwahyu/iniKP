@@ -11,6 +11,7 @@ use Yii;
  * @property int $A_ID
  * @property string $U_TANGGAL
  * @property string $U_DIBUAT
+ * @property string $U_PESERTA
  *
  * @property Admin $a
  * @property Pada[] $padas
@@ -19,6 +20,7 @@ use Yii;
  */
 class Jadwal extends \yii\db\ActiveRecord
 {
+    public $file;
     /**
      * {@inheritdoc}
      */
@@ -33,9 +35,10 @@ class Jadwal extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['U_ID', 'U_DIBUAT'], 'required'],
+            [['U_ID', 'U_DIBUAT', 'U_PESERTA'], 'required'],
             [['U_ID', 'A_ID'], 'integer'],
             [['U_TANGGAL', 'U_DIBUAT'], 'safe'],
+            [['U_PESERTA'], 'string', 'max' => 256],
             [['U_ID'], 'unique'],
             [['A_ID'], 'exist', 'skipOnError' => true, 'targetClass' => Admin::className(), 'targetAttribute' => ['A_ID' => 'A_ID']],
         ];
@@ -51,6 +54,7 @@ class Jadwal extends \yii\db\ActiveRecord
             'A_ID' => 'A ID',
             'U_TANGGAL' => 'U Tanggal',
             'U_DIBUAT' => 'U Dibuat',
+            'U_PESERTA' => 'U Peserta',
         ];
     }
 

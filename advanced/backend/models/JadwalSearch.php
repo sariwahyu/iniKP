@@ -18,7 +18,7 @@ class JadwalSearch extends Jadwal
     {
         return [
             [['U_ID', 'A_ID'], 'integer'],
-            [['U_TANGGAL', 'U_DIBUAT'], 'safe'],
+            [['U_TANGGAL', 'U_DIBUAT', 'U_PESERTA'], 'safe'],
         ];
     }
 
@@ -63,6 +63,8 @@ class JadwalSearch extends Jadwal
             'U_TANGGAL' => $this->U_TANGGAL,
             'U_DIBUAT' => $this->U_DIBUAT,
         ]);
+
+        $query->andFilterWhere(['like', 'U_PESERTA', $this->U_PESERTA]);
 
         return $dataProvider;
     }
